@@ -1,0 +1,9 @@
+source_countries: ['india']
+source_data_path: ~/vlr-project/data
+output_dir: ~/vlr-project/outputs/e2e-instruct/france
+prompt: make the image culturally relevant to France
+seed: 0
+image_guidance: 1.5
+num_inference_steps: 100
+text_guidance: 7.5
+debug: False

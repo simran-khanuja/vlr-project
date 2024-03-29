@@ -1,0 +1,7 @@
+source_countries: ['india']
+source_data_path: ~/vlr-project/data
+output_dir: ~/vlr-project/outputs/caption-llm_edit/france
+instructblip_prompt: "A short image description:"
+llm_prompt: "Edit the input text, such that it is culturally relevant to France. Keep the output text of a similar length as the input text. If it is already culturally relevant to France, no need to make any edits. The output text must be in English only.\nInput: " # + generated_text + Output:
+task_path: ''
+OPENAI_API_KEY: ''
