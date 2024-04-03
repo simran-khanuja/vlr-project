@@ -67,7 +67,7 @@ def main():
 
     # Read in config file to get args
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="../configs/e2e-instruct.yaml", help="Path to config file.")
+    parser.add_argument("--config", default="configs/e2e-instruct.yaml", help="Path to config file.")
    
     args = parser.parse_args()
     with open(args.config) as f:

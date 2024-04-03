@@ -1,5 +1,5 @@
 source_countries: ['india']
-source_data_path: ../data
+source_data_path: data/
 output_dir: ~/vlr-project/outputs/e2e-instruct/france
 prompt: make the image culturally relevant to France
 seed: 0
