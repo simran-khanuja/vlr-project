@@ -67,7 +67,7 @@ def main():
 
     # Read in config file to get args
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/part1/e2e-instruct/brazil.yaml", help="Path to config file.")
+    parser.add_argument("--config", default="configs/e2e-instruct.yaml", help="Path to config file.")
    
     args = parser.parse_args()
     with open(args.config) as f:
@@ -109,10 +109,11 @@ def main():
     # Iterate over each image path and remove it if it doesn't exist
     source_paths = []
     source_countries = []
+
     for i in range(len(all_source_paths)):
-        if os.path.exists(all_source_paths[i]):
-            source_paths.append(all_source_paths[i])
-            source_countries.append(all_source_countries[i])
+        #if os.path.exists(all_source_paths[i]):
+        source_paths.append(all_source_paths[i])
+        source_countries.append(all_source_countries[i])
     logging.info("Number of images: " + str(len(source_paths)))
 
     num_inference_steps = int(config["num_inference_steps"])
