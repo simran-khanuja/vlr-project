@@ -1,0 +1,2 @@
+metadata: ../outputs/e2e-instruct/part1/e2e-instruct/india/metadata.csv
+output_dir: ../outputs/e2e-instruct/india_dino_similarity
