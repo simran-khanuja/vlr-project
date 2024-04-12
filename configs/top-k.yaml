@@ -1,0 +1,6 @@
+topk: 1000
+countries: ["India", "France"]
+prompt: "This is a food image."
+input_dir: /data/tir/projects/tir4/corpora/datacomp-1b/jsonl
+output_dir: /data/tir/projects/tir4/corpora/datacomp-1b/food
+model: openai/clip-vit-large-patch14
