@@ -20,6 +20,11 @@ import requests
 from io import BytesIO
 
 
+# This script calculates the similarity between source and target images using CLIP and DINO models and hence 
+# finds the closest target image for each source image.
+# Known limitations:
+# currently the size of source and target images is constrained to be the same
+
 def download_image(path):
     # check if image is URL and download if yes
     if path.startswith("http"):
