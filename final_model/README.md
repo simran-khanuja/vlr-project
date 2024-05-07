@@ -4,7 +4,12 @@ Setup the environment with `environment.yaml`
 conda env create -f environment.yaml
 ```
 
-The training scripts expect the dataset to be in the following format:
+- The training scripts expect the dataset to be in the following format:
+
+
+
+
+
     ```
     data
     ├── dataset_name
@@ -32,6 +37,7 @@ The training scripts expect the dataset to be in the following format:
     │   │   ├── 000001.png
     │   │   └── ...
     ```
+
 where `targets` files are used for supervised training and `captions` files are use for specific original and edited captions for each image.
 
 
