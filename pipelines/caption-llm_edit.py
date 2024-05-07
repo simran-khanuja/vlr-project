@@ -34,10 +34,14 @@ def download_image(path):
         else:
             logging.info(f"Invalid response")
             return "error"
-    image = PIL.Image.open(path)
-    image = PIL.ImageOps.exif_transpose(image)
-    image = image.convert("RGB")
-    return image
+    try:
+        image = PIL.Image.open(path)
+        image = PIL.ImageOps.exif_transpose(image)
+        image = image.convert("RGB")
+        return image
+    except Exception as e:
+        logging.info(f"Error while reading image: {e}")
+        return "error"
 
 
 def answer_fn(prompt):
@@ -68,7 +72,7 @@ def main():
 
     # Read in config file to get args
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/part2/caption-llm_edit/brazil.yaml", help="Path to config file.")
+    parser.add_argument("--config", default="/home/skhanuja/vlr-project/configs/caption-llm_edit-multiple.yaml", help="Path to config file.")
     args = parser.parse_args()
     with open(args.config) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
@@ -92,14 +96,34 @@ def main():
 
     all_source_paths = []
     all_source_countries = []
+    # for country in source_countries:
+    #     country_paths_file = source_data_path + "/" + country + ".json"
+    #     with open(country_paths_file) as f:
+    #         data = json.load(f)
+    #         # get values from json file which is a dictionary of dictionaries
+    #         for category in data:
+    #             all_source_paths.extend(data[category].values())
+    #             all_source_countries.extend([country] * len(data[category].values()))
+
+    # read all files in source_data_path + "/" + country
     for country in source_countries:
-        country_paths_file = source_data_path + "/" + country + ".json"
-        with open(country_paths_file) as f:
-            data = json.load(f)
-            # get values from json file which is a dictionary of dictionaries
-            for category in data:
-                all_source_paths.extend(data[category].values())
-                all_source_countries.extend([country] * len(data[category].values()))
+        country_path = source_data_path + "/" + country
+        for root, dirs, files in os.walk(country_path):
+            for file in files:
+                if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png"):
+                    # check if file is downloadable without errors
+                    image = download_image(os.path.join(root, file))
+                    if image == "error":
+                        continue
+                    all_source_paths.append(os.path.join(root, file))
+                    all_source_countries.append(country)
+        # country_path = source_data_path + "/" + country
+        # with open(country_paths_file) as f:
+        #     ids = f.readlines()
+        #     ids = [x.strip() for x in ids]
+        #     paths = ["/data/tir/projects/tir4/corpora/datacomp-1b/food/laion/high_quality/train_A/" + x for x in ids]
+        #     all_source_paths.extend(paths)
+        #     all_source_countries.extend([country] * len(paths))
     
     print(len(all_source_paths))
     print(len(all_source_countries))
@@ -166,20 +190,40 @@ def main():
     llm_text= []
     for caption, llm_prompt in zip(blip_captions, llm_prompts):
         # llm_prompt = LLM_PROMPT.replace("\{task\}", "\""+task+"\"")
-        gen_text = answer_fn(llm_prompt + caption + "\nOutput: ")
-        for char in ["\"", ";", "."]:
-            gen_text = gen_text.replace(char, "")
-        llm_text.append(gen_text)
+        try:
+            gen_text = answer_fn(llm_prompt + caption + "\nOutput: ")
+            for char in ["\"", ";", "."]:
+                gen_text = gen_text.replace(char, "")
+            llm_text.append(gen_text)
+        except Exception as e:
+            logging.error(f"Error while generating LLM text: {e}")
+            llm_text.append(None)
     
     logging.info(llm_text)
     
     # Write caption and LLM text to file
+    # with open(config["output_dir"] + "/metadata.csv", "w", encoding='utf-8') as f:
+    #     f.write("src_image_path,src_country,caption,llm_edit\n")
+    #     for i in range(len(all_source_paths)):
+    #         blip_cp = blip_captions[i].replace("\"", "\'")
+    #         llm = llm_text[i].replace("\"", "\'")
+    #         f.write(all_source_paths[i] + ",\"" + all_source_countries[i] + "\",\"" + blip_cp + "\",\"" + llm + "\"\n")
+    
     with open(config["output_dir"] + "/metadata.csv", "w", encoding='utf-8') as f:
-        f.write("src_image_path,src_country,caption,llm_edit\n")
+        f.write("src_image_path,caption,llm_edit1,llm_edit2,llm_edit3,llm_edit4,llm_edit5\n")
         for i in range(len(all_source_paths)):
+            if llm_text[i] is None:
+                continue
             blip_cp = blip_captions[i].replace("\"", "\'")
             llm = llm_text[i].replace("\"", "\'")
-            f.write(all_source_paths[i] + ",\"" + all_source_countries[i] + "\",\"" + blip_cp + "\",\"" + llm + "\"\n")
+            llm_edits = llm.split("\n")
+            print(len(llm_edits))
+            # strip llm_edits of "1 or 2 or 3 or 4 or 5" and whitespaces
+            llm_edits = [edit[2:].strip() for edit in llm_edits]
+
+            if len(llm_edits) < 5:
+               continue
+            f.write(all_source_paths[i] + ",\"" + blip_cp + "\",\"" + llm_edits[0] + "\",\"" + llm_edits[1] + "\",\"" + llm_edits[2] + "\",\"" + llm_edits[3] + "\",\"" + llm_edits[4] + "\"\n")
 
 
 if __name__ == "__main__":

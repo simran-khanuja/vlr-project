@@ -92,13 +92,20 @@ def main():
     all_source_paths = []
     all_source_countries = []
     for country in source_countries_list:
-        country_paths_file = source_data_path + "/" + country + ".json"
+        # country_paths_file = source_data_path + "/" + country + ".json"
+        # with open(country_paths_file) as f:
+        #     data = json.load(f)
+        #     # get values from json file which is a dictionary of dictionaries
+        #     for category in data:
+        #         all_source_paths.extend(data[category].values())
+        #         all_source_countries.extend([country] * len(data[category].values()))
+        country_paths_file = source_data_path + "/test_B.txt"
         with open(country_paths_file) as f:
-            data = json.load(f)
-            # get values from json file which is a dictionary of dictionaries
-            for category in data:
-                all_source_paths.extend(data[category].values())
-                all_source_countries.extend([country] * len(data[category].values()))
+            ids = f.readlines()
+            ids = [x.strip() for x in ids]
+            paths = ["/data/tir/projects/tir4/corpora/datacomp-1b/food/laion/high_quality/train_B/" + x for x in ids]
+            all_source_paths.extend(paths)
+            all_source_countries.extend([country] * len(paths))
 
     if config["debug"]:
         logging.info("Debug mode enabled. Using 20 random images.")

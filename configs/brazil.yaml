@@ -1,0 +1,7 @@
+indice_folder: /data/tir/projects/tir1/corpora/laion/index/ViT-H-14/Brazil_en
+clip_model: open_clip:ViT-H-14
+indices_path: /data/tir/projects/tir4/corpora/laion/index/ViT-H-14/indices_paths.json
+indice_name: brazil_en
+jsonl_file_path: /data/tir/projects/tir4/corpora/laion/jsonl/laion2B-en/Brazil_dataset.jsonl
+output_dir: /data/tir/projects/tir4/corpora/datacomp-1b/food/laion/brazil
+prompt: "This is a food image from Brazil."
